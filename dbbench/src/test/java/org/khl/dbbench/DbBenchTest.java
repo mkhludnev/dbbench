@@ -20,12 +20,16 @@ public class DbBenchTest extends RandomizedTest {
 
     private static final long prime2 = 557443;
     private static final long prime1 = 1299709;
-    private static final int batch = isNightly() ? 1000 : 100; 
-    private static final int manyRows = batch*(isNightly() ? 1000 : 100);
     private static Connection conn;
+    private static int batch ; 
+    private static int manyRows ;
+    
 
     @BeforeClass
     public static void fill() throws SQLException, ClassNotFoundException{
+        batch = isNightly() ? 1000 : 100;
+        manyRows = batch*(isNightly() ? 1000 : 100);
+        
         Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
         conn = DriverManager.getConnection("jdbc:derby:testdb;create=true");
         
@@ -43,24 +47,29 @@ public class DbBenchTest extends RandomizedTest {
         }
         
         assertFalse(stm.execute("DELETE FROM FIRSTTABLE"));
+        stm.close(); 
         
         conn.setAutoCommit(false);
+        final PreparedStatement insStam = conn.prepareStatement("INSERT INTO FIRSTTABLE VALUES (?,?)");
         int updCount = 0;
         // one mln I wanna to put
         for(int i=0; i<manyRows;){
             long id = nthId(i++); 
             //System.out.println(""+(i-1) +" "+id);
-            stm.addBatch("INSERT INTO FIRSTTABLE VALUES ("+id+",'"+id+"th')");
+            insStam.setInt(1, (int)id);
+            insStam.setString(2, id+"th");
+            insStam.addBatch();
             if(i%batch==0 && i>0){
                 final int[] cntz;
-                cntz = stm.executeBatch();
+                cntz = insStam.executeBatch();
                 for(int c :cntz)
                     updCount += c;
             }
         }
+        insStam.close();
         conn.commit();
+        
         assertEquals(manyRows, updCount);
-        stm.close();
         conn.setAutoCommit(true);
     }
 
