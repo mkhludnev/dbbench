@@ -11,7 +11,6 @@ import java.util.BitSet;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.experimental.categories.Categories.ExcludeCategory;
 
 import com.carrotsearch.randomizedtesting.RandomizedTest;
 import com.carrotsearch.randomizedtesting.annotations.Repeat;
@@ -21,8 +20,8 @@ public class DbBenchTest extends RandomizedTest {
 
     private static final long prime2 = 557443;
     private static final long prime1 = 1299709;
-    private static final int batch = 1000; //1000;
-    private static final int manyRows = batch*1000;//1000;
+    private static final int batch = isNightly() ? 1000 : 100; 
+    private static final int manyRows = batch*(isNightly() ? 1000 : 100);
     private static Connection conn;
 
     @BeforeClass
