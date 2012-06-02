@@ -31,7 +31,8 @@ public class DbBenchTest extends RandomizedTest {
         manyRows = batch*(isNightly() ? 1000 : 100);
         
         Class.forName("org.apache.derby.jdbc.EmbeddedDriver");
-        conn = DriverManager.getConnection("jdbc:derby:testdb;create=true");
+        Class.forName("org.apache.derby.jdbc.ClientDriver");
+        conn = DriverManager.getConnection("jdbc:derby:" + System.getProperty("derby", "") + "testdb;create=true");
         
         final Statement stm = conn.createStatement();
         

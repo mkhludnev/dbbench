@@ -5,4 +5,10 @@ and paginated
 SELECT * from FIRSTTABLE where id in (?,?,?,?..) - pullByBatches()
 it proceeds 10000 rows by default in 100 rows batches. 
 To scale data higher specify -Dtests.nightly=true.
-pls find one-mln-run.png with result.
+pls find one-mln-embedded.png with embedded server results.
+
+
+one-mln-via-loopback.png shows the same 1Mln test for network server 
+at the same laptop. to reproduce: run ./startNetworkServer from Derby
+distribution and specify endpoint via -Dderby=//localhost/ 
+Pls check derby doc and test source for further details. 
