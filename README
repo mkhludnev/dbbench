@@ -1,0 +1,8 @@
+there is single JUnit here org.khl.dbbench.DbBenchTest, 
+which utilizes embedded derby for pulling many rows by two
+different ways SELECT * FROM table ORDER BY ID - pullOneByOne()
+and paginated 
+SELECT * from FIRSTTABLE where id in (?,?,?,?..) - pullByBatches()
+it proceeds 10000 rows by default in 100 rows batches. 
+To scale data higher specify -Dtests.nightly=true.
+pls find one-mln-run.png with result.
